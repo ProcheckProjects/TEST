@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- ========================================= -->
+        <!-- CATÉGORIE DE SÉCURITÉ -->
+        <!-- ========================================= -->
+        <record id="module_category_archivage_collecteurs" model="ir.module.category">
+            <field name="name">Archivage Dossiers Collecteurs</field>
+            <field name="description">Gestion des droits d'accès pour l'archivage des dossiers collecteurs</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- GROUPES DE SÉCURITÉ -->
+        <!-- ========================================= -->
+        
+        <!-- Groupe Archiviste -->
+        <record id="group_archiviste" model="res.groups">
+            <field name="name">Archiviste</field>
+            <field name="category_id" ref="module_category_archivage_collecteurs"/>
+            <field name="comment">
+                Droits d'accès pour les archivistes :
+                - Gestion des réceptions de dossiers
+                - Validation des livraisons numériques
+                - Accès aux rapports et KPIs
+                - Supervision générale du processus
+            </field>
+        </record>
+
+        <!-- Groupe Agent de Traitement -->
+        <record id="group_agent_traitement" model="res.groups">
+            <field name="name">Agent de Traitement</field>
+            <field name="category_id" ref="module_category_archivage_collecteurs"/>
+            <field name="comment">
+                Droits d'accès pour les agents de traitement physique :
+                - Traitement physique des dossiers
+                - Saisie des radicaux et codes agence
+                - Gestion du temps de traitement
+                - Accès aux dossiers en cours de traitement
+            </field>
+        </record>
+
+        <!-- Groupe Gestionnaire de Stock -->
+        <record id="group_gestionnaire_stock" model="res.groups">
+            <field name="name">Gestionnaire de Stock</field>
+            <field name="category_id" ref="module_category_archivage_collecteurs"/>
+            <field name="comment">
+                Droits d'accès pour les gestionnaires de stock :
+                - Gestion des transferts entre zones
+                - Validation des mouvements de stock
+                - Gestion des emplacements
+                - Suivi des dossiers en transit
+            </field>
+        </record>
+
+        <!-- Groupe Opérateur de Numérisation -->
+        <record id="group_operateur_numerisation" model="res.groups">
+            <field name="name">Opérateur de Numérisation</field>
+            <field name="category_id" ref="module_category_archivage_collecteurs"/>
+            <field name="comment">
+                Droits d'accès pour les opérateurs de numérisation :
+                - Numérisation des dossiers
+                - Gestion des cartons
+                - Contrôle qualité numérisation
+                - Saisie des métriques de numérisation
+            </field>
+        </record>
+
+        <!-- Groupe Agent d'Indexation -->
+        <record id="group_agent_indexation" model="res.groups">
+            <field name="name">Agent d'Indexation</field>
+            <field name="category_id" ref="module_category_archivage_collecteurs"/>
+            <field name="comment">
+                Droits d'accès pour les agents d'indexation :
+                - Indexation des documents
+                - Saisie des métadonnées
+                - Classification des documents
+                - Contrôle qualité indexation
+            </field>
+        </record>
+
+        <!-- Groupe Superviseur -->
+        <record id="group_superviseur" model="res.groups">
+            <field name="name">Superviseur Archivage</field>
+            <field name="category_id" ref="module_category_archivage_collecteurs"/>
+            <field name="comment">
+                Droits d'accès pour les superviseurs :
+                - Accès complet à tous les processus
+                - Gestion des utilisateurs et droits
+                - Accès aux rapports avancés
+                - Configuration du système
+            </field>
+        </record>
+
+        <!-- Groupe Manager (hérite de tous les autres) -->
+        <record id="group_manager" model="res.groups">
+            <field name="name">Manager Archivage</field>
+            <field name="category_id" ref="module_category_archivage_collecteurs"/>
+            <field name="implied_ids" eval="[(4, ref('group_archiviste')), 
+                                            (4, ref('group_agent_traitement')), 
+                                            (4, ref('group_gestionnaire_stock')), 
+                                            (4, ref('group_operateur_numerisation')), 
+                                            (4, ref('group_agent_indexation')), 
+                                            (4, ref('group_superviseur'))]"/>
+            <field name="comment">
+                Droits d'accès complets pour les managers :
+                - Tous les droits des autres groupes
+                - Administration complète du module
+                - Gestion des configurations avancées
+            </field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- RÈGLES D'ACCÈS AUX ENREGISTREMENTS -->
+        <!-- ========================================= -->
+
+        <!-- Règles pour les Réceptions -->
+        <record id="reception_dossier_archiviste_rule" model="ir.rule">
+            <field name="name">Réceptions - Archivistes</field>
+            <field name="model_id" ref="model_reception_dossier"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_archiviste')), (4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="reception_dossier_autres_rule" model="ir.rule">
+            <field name="name">Réceptions - Lecture Seule</field>
+            <field name="model_id" ref="model_reception_dossier"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_agent_traitement')), (4, ref('group_gestionnaire_stock')), (4, ref('group_operateur_numerisation')), (4, ref('group_agent_indexation'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règles pour les Dossiers Collecteurs -->
+        <record id="dossier_collecteur_all_rule" model="ir.rule">
+            <field name="name">Dossiers Collecteurs - Tous</field>
+            <field name="model_id" ref="model_dossier_collecteur"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_archiviste')), (4, ref('group_agent_traitement')), (4, ref('group_gestionnaire_stock')), (4, ref('group_operateur_numerisation')), (4, ref('group_agent_indexation')), (4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règles pour les Traitements Physiques -->
+        <record id="traitement_physique_agent_rule" model="ir.rule">
+            <field name="name">Traitements - Agents Traitement</field>
+            <field name="model_id" ref="model_traitement_physique"/>
+            <field name="domain_force">[('agent_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_agent_traitement'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="traitement_physique_superviseur_rule" model="ir.rule">
+            <field name="name">Traitements - Superviseurs</field>
+            <field name="model_id" ref="model_traitement_physique"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règles pour les Numérisations -->
+        <record id="numerisation_dossier_operateur_rule" model="ir.rule">
+            <field name="name">Numérisations - Opérateurs</field>
+            <field name="model_id" ref="model_numerisation_dossier"/>
+            <field name="domain_force">[('operateur_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_operateur_numerisation'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="numerisation_dossier_superviseur_rule" model="ir.rule">
+            <field name="name">Numérisations - Superviseurs</field>
+            <field name="model_id" ref="model_numerisation_dossier"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règles pour les Indexations -->
+        <record id="indexation_dossier_agent_rule" model="ir.rule">
+            <field name="name">Indexations - Agents Indexation</field>
+            <field name="model_id" ref="model_indexation_dossier"/>
+            <field name="domain_force">[('agent_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_agent_indexation'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="indexation_dossier_superviseur_rule" model="ir.rule">
+            <field name="name">Indexations - Superviseurs</field>
+            <field name="model_id" ref="model_indexation_dossier"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règles pour les Livraisons -->
+        <record id="livraison_numerique_archiviste_rule" model="ir.rule">
+            <field name="name">Livraisons - Archivistes</field>
+            <field name="model_id" ref="model_livraison_numerique"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_archiviste')), (4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règles pour les Cartons -->
+        <record id="carton_numerisation_operateur_rule" model="ir.rule">
+            <field name="name">Cartons - Opérateurs</field>
+            <field name="model_id" ref="model_carton_numerisation"/>
+            <field name="domain_force">[('operateur_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_operateur_numerisation'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="carton_numerisation_superviseur_rule" model="ir.rule">
+            <field name="name">Cartons - Superviseurs</field>
+            <field name="model_id" ref="model_carton_numerisation"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règles pour les Rapports KPI -->
+        <record id="reporting_kpi_all_rule" model="ir.rule">
+            <field name="name">Rapports KPI - Tous</field>
+            <field name="model_id" ref="model_reporting_kpi"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_archiviste')), (4, ref('group_superviseur')), (4, ref('group_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="reporting_kpi_lecture_rule" model="ir.rule">
+            <field name="name">Rapports KPI - Lecture</field>
+            <field name="model_id" ref="model_reporting_kpi"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_agent_traitement')), (4, ref('group_gestionnaire_stock')), (4, ref('group_operateur_numerisation')), (4, ref('group_agent_indexation'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- UTILISATEURS PAR DÉFAUT -->
+        <!-- ========================================= -->
+
+        <!-- Utilisateur Archiviste par défaut -->
+        <record id="user_archiviste_demo" model="res.users">
+            <field name="name">Archiviste Demo</field>
+            <field name="login">archiviste</field>
+            <field name="password">archiviste</field>
+            <field name="email">archiviste@cih.ma</field>
+            <field name="groups_id" eval="[(4, ref('group_archiviste')), (4, ref('base.group_user'))]"/>
+            <field name="specialite_archivage">reception</field>
+            <field name="niveau_experience">experimente</field>
+            <field name="objectif_quotidien">20</field>
+            <field name="objectif_mensuel">400</field>
+        </record>
+
+        <!-- Utilisateur Agent de Traitement par défaut -->
+        <record id="user_agent_traitement_demo" model="res.users">
+            <field name="name">Agent Traitement Demo</field>
+            <field name="login">agent_traitement</field>
+            <field name="password">agent_traitement</field>
+            <field name="email">agent.traitement@cih.ma</field>
+            <field name="groups_id" eval="[(4, ref('group_agent_traitement')), (4, ref('base.group_user'))]"/>
+            <field name="specialite_archivage">traitement</field>
+            <field name="niveau_experience">intermediaire</field>
+            <field name="objectif_quotidien">30</field>
+            <field name="objectif_mensuel">600</field>
+        </record>
+
+        <!-- Utilisateur Gestionnaire Stock par défaut -->
+        <record id="user_gestionnaire_stock_demo" model="res.users">
+            <field name="name">Gestionnaire Stock Demo</field>
+            <field name="login">gestionnaire_stock</field>
+            <field name="password">gestionnaire_stock</field>
+            <field name="email">gestionnaire.stock@cih.ma</field>
+            <field name="groups_id" eval="[(4, ref('group_gestionnaire_stock')), (4, ref('base.group_user'))]"/>
+            <field name="specialite_archivage">stock</field>
+            <field name="niveau_experience">experimente</field>
+            <field name="objectif_quotidien">50</field>
+            <field name="objectif_mensuel">1000</field>
+        </record>
+
+        <!-- Utilisateur Opérateur Numérisation par défaut -->
+        <record id="user_operateur_numerisation_demo" model="res.users">
+            <field name="name">Opérateur Numérisation Demo</field>
+            <field name="login">operateur_numerisation</field>
+            <field name="password">operateur_numerisation</field>
+            <field name="email">operateur.numerisation@cih.ma</field>
+            <field name="groups_id" eval="[(4, ref('group_operateur_numerisation')), (4, ref('base.group_user'))]"/>
+            <field name="specialite_archivage">numerisation</field>
+            <field name="niveau_experience">intermediaire</field>
+            <field name="objectif_quotidien">25</field>
+            <field name="objectif_mensuel">500</field>
+        </record>
+
+        <!-- Utilisateur Agent Indexation par défaut -->
+        <record id="user_agent_indexation_demo" model="res.users">
+            <field name="name">Agent Indexation Demo</field>
+            <field name="login">agent_indexation</field>
+            <field name="password">agent_indexation</field>
+            <field name="email">agent.indexation@cih.ma</field>
+            <field name="groups_id" eval="[(4, ref('group_agent_indexation')), (4, ref('base.group_user'))]"/>
+            <field name="specialite_archivage">indexation</field>
+            <field name="niveau_experience">experimente</field>
+            <field name="objectif_quotidien">40</field>
+            <field name="objectif_mensuel">800</field>
+        </record>
+
+        <!-- Utilisateur Superviseur par défaut -->
+        <record id="user_superviseur_demo" model="res.users">
+            <field name="name">Superviseur Demo</field>
+            <field name="login">superviseur</field>
+            <field name="password">superviseur</field>
+            <field name="email">superviseur@cih.ma</field>
+            <field name="groups_id" eval="[(4, ref('group_superviseur')), (4, ref('base.group_user'))]"/>
+            <field name="specialite_archivage">supervision</field>
+            <field name="niveau_experience">expert</field>
+        </record>
+
+        <!-- Utilisateur Manager par défaut -->
+        <record id="user_manager_demo" model="res.users">
+            <field name="name">Manager Archivage Demo</field>
+            <field name="login">manager_archivage</field>
+            <field name="password">manager_archivage</field>
+            <field name="email">manager.archivage@cih.ma</field>
+            <field name="groups_id" eval="[(4, ref('group_manager')), (4, ref('base.group_user'))]"/>
+            <field name="specialite_archivage">supervision</field>
+            <field name="niveau_experience">expert</field>
+        </record>
+
+    </data>
+</odoo>
+

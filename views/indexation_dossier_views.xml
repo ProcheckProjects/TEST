@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- VUES POUR INDEXATION DOSSIER -->
+        <!-- ========================================= -->
+
+        <!-- Vue Liste Indexations Dossiers -->
+        <record id="view_indexation_dossier_tree" model="ir.ui.view">
+            <field name="name">indexation.dossier.tree</field>
+            <field name="model">indexation.dossier</field>
+            <field name="arch" type="xml">
+                <tree string="Indexations de Dossiers" decoration-success="state=='valide'" decoration-warning="state=='en_cours'" decoration-info="state=='pause'">
+                    <field name="dossier_id"/>
+                    <field name="agent_id"/>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                    <field name="duree_indexation" widget="float_time"/>
+                    <field name="numero_contrat"/>
+                    <field name="state" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Indexation Dossier -->
+        <record id="view_indexation_dossier_form" model="ir.ui.view">
+            <field name="name">indexation.dossier.form</field>
+            <field name="model">indexation.dossier</field>
+            <field name="arch" type="xml">
+                <form string="Indexation de Dossier">
+                    <header>
+                        <button name="action_mettre_en_pause" type="object" string="Mettre en Pause" 
+                                class="btn-warning" attrs="{'invisible': [('state', '!=', 'en_cours')]}"/>
+                        <button name="action_reprendre_indexation" type="object" string="Reprendre Indexation" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'pause')]}"/>
+                        <button name="action_terminer_indexation" type="object" string="Terminer Indexation" 
+                                class="btn-success" attrs="{'invisible': [('state', 'not in', ['en_cours', 'pause'])]}"/>
+                        <button name="action_valider_indexation" type="object" string="Valider Indexation" 
+                                class="btn-success" attrs="{'invisible': [('state', '!=', 'termine')]}"/>
+                        <button name="action_effectuer_controle_qualite" type="object" string="Contrôle Qualité" 
+                                class="btn-info" attrs="{'invisible': ['|', ('state', '!=', 'termine'), ('controle_qualite', '=', True)]}"/>
+                        <button name="action_signaler_erreur" type="object" string="Signaler Erreur" 
+                                class="btn-danger" attrs="{'invisible': [('state', 'in', ['valide', 'erreur'])]}"/>
+                        <button name="action_reprendre_indexation_terminee" type="object" string="Reprendre Indexation Terminée" 
+                                class="btn-secondary" attrs="{'invisible': [('state', 'not in', ['termine', 'valide', 'erreur'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="en_cours,pause,termine,valide,erreur"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="dossier_id" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="indexation_info">
+                                <field name="agent_id" options="{'no_create': True}"/>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                                <field name="duree_indexation" widget="float_time"/>
+                            </group>
+                            <group name="details_indexation">
+                                <field name="numero_contrat"/>
+                                <field name="types_documents" widget="many2many_tags"/>
+                                <field name="mots_cles" widget="many2many_tags"/>
+                            </group>
+                        </group>
+
+                        <group string="Observations">
+                            <field name="observations" nolabel="1" placeholder="Observations sur l'indexation..."/>
+                        </group>
+                    </sheet>
+                    
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Kanban Indexation Dossier -->
+        <record id="view_indexation_dossier_kanban" model="ir.ui.view">
+            <field name="name">indexation.dossier.kanban</field>
+            <field name="model">indexation.dossier</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="dossier_id"/>
+                    <field name="agent_id"/>
+                    <field name="state"/>
+                    <field name="duree_indexation"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="dossier_id"/>
+                                            </strong>
+                                        </div>
+                                        <div class="o_kanban_record_top_right">
+                                            <field name="state" widget="label_selection" options="{'classes': {'nouveau': 'default', 'en_cours': 'warning', 'termine': 'success'}}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="o_kanban_record_body">
+                                        <div>
+                                            <i class="fa fa-user"/> <field name="agent_id"/>
+                                        </div>
+                                        <div t-if="record.duree_indexation.raw_value">
+                                            <i class="fa fa-clock-o"/> <field name="duree_indexation" widget="float_time"/>
+                                        </div>
+                                        <div t-if="record.numero_contrat.raw_value">
+                                            <i class="fa fa-file-text-o"/> <field name="numero_contrat"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue Graphique Indexation Dossier -->
+        <record id="view_indexation_dossier_graph" model="ir.ui.view">
+            <field name="name">indexation.dossier.graph</field>
+            <field name="model">indexation.dossier</field>
+            <field name="arch" type="xml">
+                <graph string="Statistiques Indexation" type="bar">
+                    <field name="date_debut" type="row" interval="day"/>
+                    <field name="duree_indexation" type="measure"/>
+                    <field name="agent_id" type="col"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Indexation Dossier -->
+        <record id="view_indexation_dossier_search" model="ir.ui.view">
+            <field name="name">indexation.dossier.search</field>
+            <field name="model">indexation.dossier</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Indexations">
+                    <field name="dossier_id"/>
+                    <field name="agent_id"/>
+                    <field name="numero_contrat"/>
+                    <field name="state"/>
+                    <filter name="nouveau" string="Nouveau" domain="[('state', '=', 'nouveau')]"/>
+                    <filter name="en_cours" string="En Cours" domain="[('state', '=', 'en_cours')]"/>
+                    <filter name="termine" string="Terminé" domain="[('state', '=', 'termine')]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_agent" string="Agent" context="{'group_by': 'agent_id'}"/>
+                        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

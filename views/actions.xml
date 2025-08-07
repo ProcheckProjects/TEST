@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- ACTIONS PRINCIPALES -->
+        <!-- ========================================= -->
+
+        <!-- Actions Réception -->
+        <record id="action_reception_dossier" model="ir.actions.act_window">
+            <field name="name">Réceptions de Dossiers</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
+            <field name="search_view_id" ref="view_reception_dossier_search"/>
+            <field name="context">{
+                'search_default_ce_mois': 1,
+                'search_default_group_state': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle réception de dossiers
+                </p>
+                <p>
+                    Gérez les réceptions de dossiers collecteurs en provenance de CIH Bank.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_mes_receptions" model="ir.actions.act_window">
+            <field name="name">Mes Réceptions</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('archiviste_id', '=', uid)]</field>
+            <field name="context">{
+                'search_default_en_cours': 1,
+                'default_archiviste_id': uid
+            }</field>
+        </record>
+
+        <record id="action_receptions_jour" model="ir.actions.act_window">
+            <field name="name">Réceptions du Jour</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="domain">[('date_reception', '=', context_today().strftime('%Y-%m-%d'))]</field>
+            <field name="context">{'search_default_group_archiviste': 1}</field>
+        </record>
+
+        <record id="action_nouvelle_reception" model="ir.actions.act_window">
+            <field name="name">Nouvelle Réception</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="context">{'default_archiviste_id': uid}</field>
+        </record>
+
+        <!-- Actions Dossiers Collecteurs -->
+        <record id="action_dossier_collecteur" model="ir.actions.act_window">
+            <field name="name">Dossiers Collecteurs</field>
+            <field name="res_model">dossier.collecteur</field>
+            <field name="view_mode">kanban,tree,form,graph,pivot</field>
+            <field name="search_view_id" ref="view_dossier_collecteur_search"/>
+            <field name="context">{
+                'search_default_cette_semaine': 1,
+                'search_default_group_state': 1
+            }</field>
+        </record>
+
+        <record id="action_dossiers_traiter" model="ir.actions.act_window">
+            <field name="name">Dossiers à Traiter</field>
+            <field name="res_model">dossier.collecteur</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state', 'in', ['recu', 'en_traitement'])]</field>
+            <field name="context">{'search_default_group_state': 1}</field>
+        </record>
+
+        <!-- Actions Traitement Physique -->
+        <record id="action_traitement_physique" model="ir.actions.act_window">
+            <field name="name">Traitements Physiques</field>
+            <field name="res_model">traitement.physique</field>
+            <field name="view_mode">tree,form,kanban,graph</field>
+            <field name="context">{'search_default_en_cours': 1}</field>
+        </record>
+
+        <record id="action_mes_traitements" model="ir.actions.act_window">
+            <field name="name">Mes Traitements</field>
+            <field name="res_model">traitement.physique</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('agent_id', '=', uid)]</field>
+            <field name="context">{'default_agent_id': uid}</field>
+        </record>
+
+        <!-- Actions Stock -->
+        <record id="action_transferts_stock" model="ir.actions.act_window">
+            <field name="name">Transferts Stock</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="domain">[('picking_type_id.code', '=', 'internal')]</field>
+            <field name="context">{'search_default_today': 1}</field>
+        </record>
+
+        <!-- Actions Cartons et Numérisation -->
+        <record id="action_carton_numerisation" model="ir.actions.act_window">
+            <field name="name">Gestion des Cartons</field>
+            <field name="res_model">carton.numerisation</field>
+            <field name="view_mode">kanban,tree,form,graph</field>
+            <field name="context">{'search_default_group_type': 1}</field>
+        </record>
+
+        <record id="action_cartons_numeriser" model="ir.actions.act_window">
+            <field name="name">Cartons à Numériser</field>
+            <field name="res_model">carton.numerisation</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state', 'in', ['nouveau', 'en_cours'])]</field>
+        </record>
+
+        <record id="action_numerisation_dossier" model="ir.actions.act_window">
+            <field name="name">Numérisations</field>
+            <field name="res_model">numerisation.dossier</field>
+            <field name="view_mode">tree,form,kanban,graph</field>
+            <field name="context">{'search_default_group_operateur': 1}</field>
+        </record>
+
+        <record id="action_mes_numerisations" model="ir.actions.act_window">
+            <field name="name">Mes Numérisations</field>
+            <field name="res_model">numerisation.dossier</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('operateur_id', '=', uid)]</field>
+            <field name="context">{'default_operateur_id': uid}</field>
+        </record>
+
+        <!-- Actions Indexation -->
+        <record id="action_indexation_dossier" model="ir.actions.act_window">
+            <field name="name">Indexations</field>
+            <field name="res_model">indexation.dossier</field>
+            <field name="view_mode">tree,form,kanban,graph</field>
+            <field name="context">{'search_default_group_agent': 1}</field>
+        </record>
+
+        <record id="action_dossiers_indexer" model="ir.actions.act_window">
+            <field name="name">Dossiers à Indexer</field>
+            <field name="res_model">indexation.dossier</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state', 'in', ['nouveau', 'en_cours'])]</field>
+        </record>
+
+        <record id="action_mes_indexations" model="ir.actions.act_window">
+            <field name="name">Mes Indexations</field>
+            <field name="res_model">indexation.dossier</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('agent_id', '=', uid)]</field>
+            <field name="context">{'default_agent_id': uid}</field>
+        </record>
+
+        <record id="action_base_recherche" model="ir.actions.act_window">
+            <field name="name">Base de Recherche</field>
+            <field name="res_model">indexation.dossier</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'termine')]</field>
+            <field name="context">{'search_default_group_type_document': 1}</field>
+        </record>
+
+        <!-- Actions Livraison -->
+        <record id="action_livraison_numerique" model="ir.actions.act_window">
+            <field name="name">Livraisons Numériques</field>
+            <field name="res_model">livraison.numerique</field>
+            <field name="view_mode">tree,form,kanban,graph</field>
+            <field name="context">{'search_default_group_state': 1}</field>
+        </record>
+
+        <record id="action_livraisons_preparer" model="ir.actions.act_window">
+            <field name="name">Livraisons à Préparer</field>
+            <field name="res_model">livraison.numerique</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state', 'in', ['brouillon', 'preparation'])]</field>
+        </record>
+
+        <record id="action_mes_livraisons" model="ir.actions.act_window">
+            <field name="name">Mes Livraisons</field>
+            <field name="res_model">livraison.numerique</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('archiviste_id', '=', uid)]</field>
+            <field name="context">{'default_archiviste_id': uid}</field>
+        </record>
+
+        <record id="action_historique_livraisons" model="ir.actions.act_window">
+            <field name="name">Historique Livraisons</field>
+            <field name="res_model">livraison.numerique</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="domain">[('state', '=', 'livre')]</field>
+            <field name="context">{'search_default_group_date': 1}</field>
+        </record>
+
+        <!-- Actions Reporting -->
+        <record id="action_reporting_kpi" model="ir.actions.act_window">
+            <field name="name">KPIs Production</field>
+            <field name="res_model">reporting.kpi</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="context">{'search_default_ce_mois': 1}</field>
+        </record>
+
+        <record id="action_tableau_bord_principal" model="ir.actions.act_window">
+            <field name="name">Tableau de Bord</field>
+            <field name="res_model">reporting.kpi</field>
+            <field name="view_mode">graph,pivot,tree</field>
+            <field name="context">{
+                'search_default_cette_semaine': 1,
+                'search_default_group_type': 1
+            }</field>
+        </record>
+
+        <record id="action_rapports_quotidiens" model="ir.actions.act_window">
+            <field name="name">Rapports Quotidiens</field>
+            <field name="res_model">reporting.kpi</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="domain">[('type_rapport', '=', 'quotidien')]</field>
+            <field name="context">{'default_type_rapport': 'quotidien'}</field>
+        </record>
+
+        <record id="action_rapports_hebdomadaires" model="ir.actions.act_window">
+            <field name="name">Rapports Hebdomadaires</field>
+            <field name="res_model">reporting.kpi</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="domain">[('type_rapport', '=', 'hebdomadaire')]</field>
+            <field name="context">{'default_type_rapport': 'hebdomadaire'}</field>
+        </record>
+
+        <record id="action_rapports_mensuels" model="ir.actions.act_window">
+            <field name="name">Rapports Mensuels</field>
+            <field name="res_model">reporting.kpi</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="domain">[('type_rapport', '=', 'mensuel')]</field>
+            <field name="context">{'default_type_rapport': 'mensuel'}</field>
+        </record>
+
+        <record id="action_analyse_performance" model="ir.actions.act_window">
+            <field name="name">Analyse Performance</field>
+            <field name="res_model">reporting.kpi</field>
+            <field name="view_mode">graph,pivot,tree</field>
+            <field name="context">{
+                'search_default_ce_mois': 1,
+                'search_default_group_agent': 1
+            }</field>
+        </record>
+
+        <!-- Actions Configuration -->
+        <record id="action_parametres_systeme" model="ir.actions.act_window">
+            <field name="name">Paramètres Système</field>
+            <field name="res_model">ir.config_parameter</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('key', 'like', 'archivage_collecteurs%')]</field>
+        </record>
+
+        <!-- Actions Raccourcis Rapides -->
+        <record id="action_nouvelle_reception_rapide" model="ir.actions.act_window">
+            <field name="name">Nouvelle Réception Rapide</field>
+            <field name="res_model">wizard.nouvelle.reception</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_wizard_nouvelle_reception_form"/>
+        </record>
+
+        <record id="action_creer_carton_rapide" model="ir.actions.act_window">
+            <field name="name">Créer Carton Rapide</field>
+            <field name="res_model">wizard.creer.carton</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_wizard_creer_carton_form"/>
+        </record>
+
+        <record id="action_recherche_dossier_rapide" model="ir.actions.act_window">
+            <field name="name">Recherche Dossier Rapide</field>
+            <field name="res_model">dossier.collecteur</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_dossier_collecteur_search"/>
+            <field name="context">{'search_default_group_state': 1}</field>
+        </record>
+
+        <record id="action_statut_production_rapide" model="ir.actions.act_window">
+            <field name="name">Statut Production Rapide</field>
+            <field name="res_model">reporting.kpi</field>
+            <field name="view_mode">graph,tree</field>
+            <field name="domain">[('date_rapport', '=', context_today().strftime('%Y-%m-%d'))]</field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- ACTIONS SERVEUR (AUTOMATISATIONS) -->
+        <!-- ========================================= -->
+
+        <!-- Action Serveur: Notification Transfert -->
+        <record id="action_server_notification_transfert" model="ir.actions.server">
+            <field name="name">Envoyer Notification Transfert</field>
+            <field name="model_id" ref="model_dossier_collecteur"/>
+            <field name="state">code</field>
+            <field name="code">
+                for record in records:
+                    if record.state == 'traite':
+                        # Envoyer notification au gestionnaire de stock
+                        gestionnaire = env['res.users'].search([('groups_id', 'in', [env.ref('archivage_collecteurs_complet.group_gestionnaire_stock').id])], limit=1)
+                        if gestionnaire:
+                            record.message_post(
+                                body=f"Dossier {record.numero_dossier} prêt pour transfert vers numérisation",
+                                partner_ids=[gestionnaire.partner_id.id],
+                                message_type='notification'
+                            )
+            </field>
+        </record>
+
+        <!-- Action Serveur: Calcul KPI Automatique -->
+        <record id="action_server_calcul_kpi" model="ir.actions.server">
+            <field name="name">Calculer KPIs Automatiquement</field>
+            <field name="model_id" ref="model_reporting_kpi"/>
+            <field name="state">code</field>
+            <field name="code">
+                # Calculer les KPIs du jour
+                env['reporting.kpi'].calculer_kpis_quotidiens()
+            </field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- ACTIONS PLANIFIÉES (CRON) -->
+        <!-- ========================================= -->
+
+        <!-- Cron: Calcul KPI Quotidien -->
+        <record id="cron_calcul_kpi_quotidien" model="ir.cron">
+            <field name="name">Calcul KPI Quotidien</field>
+            <field name="model_id" ref="model_reporting_kpi"/>
+            <field name="state">code</field>
+            <field name="code">model.calculer_kpis_quotidiens()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=6, minute=0, second=0)"/>
+        </record>
+
+        <!-- Cron: Nettoyage Données Temporaires -->
+        <record id="cron_nettoyage_donnees" model="ir.cron">
+            <field name="name">Nettoyage Données Temporaires</field>
+            <field name="model_id" ref="model_dossier_collecteur"/>
+            <field name="state">code</field>
+            <field name="code">
+                # Nettoyer les données temporaires de plus de 30 jours
+                old_records = model.search([('create_date', '&lt;', (fields.Datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d'))])
+                # Logique de nettoyage ici
+            </field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(weeks=1)).replace(hour=2, minute=0, second=0)"/>
+        </record>
+
+    </data>
+</odoo>
+

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- VUES POUR DOSSIER COLLECTEUR -->
+        <!-- ========================================= -->
+
+        <!-- Vue Liste Dossiers Collecteurs -->
+        <record id="view_dossier_collecteur_tree" model="ir.ui.view">
+            <field name="name">dossier.collecteur.tree</field>
+            <field name="model">dossier.collecteur</field>
+            <field name="arch" type="xml">
+                <tree string="Dossiers Collecteurs" decoration-success="state=='livre'" decoration-warning="state in ['traitement','numerisation','indexation']" decoration-info="state=='reception'">
+                    <field name="numero_dossier"/>
+                    <field name="reception_id"/>
+                    <field name="radical_dossier"/>
+                    <field name="code_agence"/>
+                    <field name="type_dossier"/>
+                    <field name="nombre_pieces"/>
+                    <field name="state" widget="badge"/>
+                    <field name="date_reception"/>
+
+                    <field name="date_creation"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Dossier Collecteur -->
+        <record id="view_dossier_collecteur_form" model="ir.ui.view">
+            <field name="name">dossier.collecteur.form</field>
+            <field name="model">dossier.collecteur</field>
+            <field name="arch" type="xml">
+                <form string="Dossier Collecteur">
+                    <header>
+                        <button name="action_demarrer_traitement" type="object" string="Démarrer Traitement" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'reception')]}"/>
+                        <button name="action_valider_traitement" type="object" string="Valider Traitement" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'traitement')]}"/>
+                        <button name="action_valider_transfert" type="object" string="Valider Transfert" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'transfert')]}"/>
+                        <button name="action_valider_numerisation" type="object" string="Valider Numérisation" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'numerisation')]}"/>
+                        <button name="action_valider_indexation" type="object" string="Valider Indexation" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'indexation')]}"/>
+                        <button name="action_valider_livraison" type="object" string="Valider Livraison" 
+                                class="btn-success" attrs="{'invisible': [('state', '!=', 'livraison')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="reception,traitement,transfert,numerisation,indexation,livraison,livre"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_voir_traitements" type="object" class="oe_stat_button" icon="fa-cogs" attrs="{'invisible': [('traitement_physique_id', '=', False)]}">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Traitement</span>
+                                </div>
+                            </button>
+                            <button name="action_voir_numerisation" type="object" class="oe_stat_button" icon="fa-scanner" attrs="{'invisible': [('numerisation_id', '=', False)]}">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Numérisation</span>
+                                </div>
+                            </button>
+                            <button name="action_voir_indexation" type="object" class="oe_stat_button" icon="fa-tags" attrs="{'invisible': [('indexation_id', '=', False)]}">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Indexation</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="numero_dossier" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="dossier_info">
+                                <field name="reception_id" options="{'no_create': True}"/>
+                                <field name="radical_dossier"/>
+                                <field name="code_agence"/>
+                                <field name="type_dossier"/>
+                            </group>
+                            <group name="contenu_info">
+                                <field name="nombre_pieces"/>
+
+                                <field name="date_creation"/>
+                                <field name="date_derniere_modification"/>
+                            </group>
+                        </group>
+
+                        <group name="timing_info" string="Informations de Timing">
+                            <group>
+                                <field name="duree_traitement_total" widget="float_time"/>
+                                <field name="duree_numerisation" widget="float_time"/>
+                            </group>
+                            <group>
+                                <field name="duree_indexation" widget="float_time"/>
+                                <field name="efficacite_globale"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Traitement Physique" name="traitement">
+                                <field name="traitement_physique_id" nolabel="1">
+                                    <form>
+                                        <group>
+                                            <field name="agent_id"/>
+                                            <field name="date_debut"/>
+                                            <field name="date_fin"/>
+                                            <field name="duree_traitement" widget="float_time"/>
+                                        </group>
+                                        <field name="observations"/>
+                                    </form>
+                                </field>
+                            </page>
+                            
+                            <page string="Numérisation" name="numerisation">
+                                <field name="numerisation_id" nolabel="1">
+                                    <form>
+                                        <group>
+                                            <field name="operateur_id"/>
+                                            <field name="carton_id"/>
+                                            <field name="date_debut"/>
+                                            <field name="date_fin"/>
+                                            <field name="nombre_pages_numerisees"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            
+                            <page string="Indexation" name="indexation">
+                                <field name="indexation_id" nolabel="1">
+                                    <form>
+                                        <group>
+                                            <field name="agent_id"/>
+                                            <field name="numero_contrat"/>
+                                            <field name="types_documents"/>
+                                            <field name="mots_cles"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            
+                            <page string="Historique" name="historique">
+                                <field name="historique_ids" nolabel="1">
+                                    <tree>
+                                        <field name="date_action"/>
+                                        <field name="action"/>
+                                        <field name="utilisateur_id"/>
+                                        <field name="emplacement_source"/>
+                                        <field name="emplacement_destination"/>
+                                        <field name="commentaire"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                            <page string="Notes" name="notes">
+                                <group>
+                                    <field name="notes" nolabel="1" placeholder="Notes sur ce dossier..."/>
+                                    <field name="observations_qualite" nolabel="1" placeholder="Observations qualité..."/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Kanban Dossiers Collecteurs -->
+        <record id="view_dossier_collecteur_kanban" model="ir.ui.view">
+            <field name="name">dossier.collecteur.kanban</field>
+            <field name="model">dossier.collecteur</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="numero_dossier"/>
+                    <field name="radical_dossier"/>
+                    <field name="code_agence"/>
+                    <field name="type_dossier"/>
+                    <field name="nombre_pieces"/>
+                    <field name="state"/>
+
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="numero_dossier"/>
+                                            </strong>
+                                        </div>
+                                        <div class="o_kanban_record_top_right">
+                                            <field name="state" widget="label_selection" options="{'classes': {'reception': 'info', 'traitement': 'warning', 'transfert': 'warning', 'numerisation': 'warning', 'indexation': 'warning', 'livraison': 'primary', 'livre': 'success'}}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_subtitle">
+                                            <i class="fa fa-code"/> <field name="radical_dossier"/> - <field name="code_agence"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-folder"/> <field name="type_dossier"/> 
+                                            (<field name="nombre_pieces"/> pièces)
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Dossiers Collecteurs -->
+        <record id="view_dossier_collecteur_search" model="ir.ui.view">
+            <field name="name">dossier.collecteur.search</field>
+            <field name="model">dossier.collecteur</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Dossiers">
+                    <field name="numero_dossier"/>
+                    <field name="radical_dossier"/>
+                    <field name="code_agence"/>
+                    <field name="reception_id"/>
+                    <field name="type_dossier"/>
+                    
+              <filter name="reception" string="Réception" domain="[('state', '=', 'reception')]"/>
+                <filter name="traitement" string="En Traitement" domain="[('state', '=', 'traitement')]"/>                  <filter name="transfert" string="Transfert" domain="[('state', '=', 'transfert')]"/>          <filter name="numerisation" string="Numérisation" domain="[('state', '=', 'numerisation')]"/>
+                    <filter name="indexation" string="Indexation" domain="[('state', '=', 'indexation')]"/>          <filter name="livraison" string="Livraison" domain="[('state', '=', 'livraison')]"/>
+                    <separator/>
+                    <filter name="aujourd_hui" string="Créés Aujourd'hui" domain="[('date_creation', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter name="cette_semaine" string="Cette Semaine" domain="[('date_creation', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_reception" string="Réception" context="{'group_by': 'reception_id'}"/>
+                        <filter name="group_type" string="Type de Dossier" context="{'group_by': 'type_dossier'}"/>
+                        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                        <filter name="group_agence" string="Code Agence" context="{'group_by': 'code_agence'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Vue Graphique Dossiers Collecteurs -->
+        <record id="view_dossier_collecteur_graph" model="ir.ui.view">
+            <field name="name">dossier.collecteur.graph</field>
+            <field name="model">dossier.collecteur</field>
+            <field name="arch" type="xml">
+                <graph string="Statistiques Dossiers" type="bar">
+                    <field name="date_creation" type="row" interval="day"/>
+                    <field name="state" type="col"/>
+                    <field name="nombre_pieces" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vue Pivot Dossiers Collecteurs -->
+        <record id="view_dossier_collecteur_pivot" model="ir.ui.view">
+            <field name="name">dossier.collecteur.pivot</field>
+            <field name="model">dossier.collecteur</field>
+            <field name="arch" type="xml">
+                <pivot string="Analyse Dossiers">
+                    <field name="date_creation" type="row" interval="month"/>
+                    <field name="type_dossier" type="col"/>
+                    <field name="nombre_pieces" type="measure"/>
+                    <field name="duree_traitement_total" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

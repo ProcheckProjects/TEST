@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ========================================= -->
+        <!-- EMPLACEMENTS DE STOCK POUR ARCHIVAGE -->
+        <!-- ========================================= -->
+
+        <!-- Emplacement Principal Archivage -->
+        <record id="stock_location_archivage_principal" model="stock.location">
+            <field name="name">Archivage Principal</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement principal pour l'archivage des dossiers collecteurs</field>
+        </record>
+
+        <!-- Zone de Réception -->
+        <record id="stock_location_zone_reception" model="stock.location">
+            <field name="name">Zone de Réception</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone de réception des dossiers collecteurs</field>
+        </record>
+
+        <!-- Zone de Traitement Physique -->
+        <record id="stock_location_zone_traitement" model="stock.location">
+            <field name="name">Zone de Traitement Physique</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone de traitement physique des dossiers</field>
+        </record>
+
+        <!-- Zone de Numérisation -->
+        <record id="stock_location_zone_numerisation" model="stock.location">
+            <field name="name">Zone de Numérisation</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone de numérisation des dossiers</field>
+        </record>
+
+        <!-- Zone d'Indexation -->
+        <record id="stock_location_zone_indexation" model="stock.location">
+            <field name="name">Zone d'Indexation</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone d'indexation des documents</field>
+        </record>
+
+        <!-- Zone de Livraison -->
+        <record id="stock_location_zone_livraison" model="stock.location">
+            <field name="name">Zone de Livraison</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone de préparation des livraisons numériques</field>
+        </record>
+
+        <!-- Zone d'Archive Finale -->
+        <record id="stock_location_zone_archive" model="stock.location">
+            <field name="name">Archive Finale</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone d'archivage final des dossiers traités</field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- EMPLACEMENTS SPÉCIALISÉS -->
+        <!-- ========================================= -->
+
+        <!-- Zone de Quarantaine -->
+        <record id="stock_location_zone_quarantaine" model="stock.location">
+            <field name="name">Zone de Quarantaine</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone de quarantaine pour dossiers problématiques</field>
+        </record>
+
+        <!-- Zone de Contrôle Qualité -->
+        <record id="stock_location_zone_controle_qualite" model="stock.location">
+            <field name="name">Zone de Contrôle Qualité</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone de contrôle qualité des dossiers</field>
+        </record>
+
+        <!-- Zone de Stockage Temporaire -->
+        <record id="stock_location_zone_stockage_temporaire" model="stock.location">
+            <field name="name">Stockage Temporaire</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_archivage_principal"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Zone de stockage temporaire entre étapes</field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- EMPLACEMENTS PAR TYPE DE DOSSIER -->
+        <!-- ========================================= -->
+
+        <!-- Zone Dossiers Prêt -->
+        <record id="stock_location_dossiers_pret" model="stock.location">
+            <field name="name">Dossiers Prêt</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_zone_numerisation"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement spécialisé pour les dossiers de prêt</field>
+        </record>
+
+        <!-- Zone Dossiers Équipement -->
+        <record id="stock_location_dossiers_equipement" model="stock.location">
+            <field name="name">Dossiers Équipement</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_zone_numerisation"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement spécialisé pour les dossiers d'équipement</field>
+        </record>
+
+        <!-- Zone Dossiers Compte -->
+        <record id="stock_location_dossiers_compte" model="stock.location">
+            <field name="name">Dossiers Compte</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_zone_numerisation"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement spécialisé pour les dossiers de compte</field>
+        </record>
+
+        <!-- Zone Dossiers Événement -->
+        <record id="stock_location_dossiers_evenement" model="stock.location">
+            <field name="name">Dossiers Événement</field>
+            <field name="usage">internal</field>
+            <field name="location_id" ref="stock_location_zone_numerisation"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement spécialisé pour les dossiers d'événement</field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- EMPLACEMENTS VIRTUELS -->
+        <!-- ========================================= -->
+
+        <!-- Emplacement Virtuel - En Cours de Traitement -->
+        <record id="stock_location_virtual_en_cours" model="stock.location">
+            <field name="name">En Cours de Traitement</field>
+            <field name="usage">transit</field>
+            <field name="location_id" ref="stock.stock_location_locations"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement virtuel pour dossiers en cours de traitement</field>
+        </record>
+
+        <!-- Emplacement Virtuel - Livrés -->
+        <record id="stock_location_virtual_livres" model="stock.location">
+            <field name="name">Dossiers Livrés</field>
+            <field name="usage">customer</field>
+            <field name="location_id" ref="stock.stock_location_locations"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement virtuel pour dossiers livrés à CIH Bank</field>
+        </record>
+
+        <!-- Emplacement Virtuel - Erreurs -->
+        <record id="stock_location_virtual_erreurs" model="stock.location">
+            <field name="name">Dossiers en Erreur</field>
+            <field name="usage">inventory</field>
+            <field name="location_id" ref="stock.stock_location_locations"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="comment">Emplacement virtuel pour dossiers en erreur</field>
+        </record>
+
+    </data>
+</odoo>
+

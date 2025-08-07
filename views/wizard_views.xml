@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- VUES WIZARD NOUVELLE RÉCEPTION -->
+        <!-- ========================================= -->
+
+        <!-- Vue Formulaire Wizard Nouvelle Réception -->
+        <record id="view_wizard_nouvelle_reception_form" model="ir.ui.view">
+            <field name="name">wizard.nouvelle.reception.form</field>
+            <field name="model">wizard.nouvelle.reception</field>
+            <field name="arch" type="xml">
+                <form string="Nouvelle Réception de Dossiers">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <span>Nouvelle Réception de Dossiers</span>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="reception_info" string="Informations de Réception">
+                                <field name="date_reception"/>
+                                <field name="type_dossier"/>
+                                <field name="nombre_dossiers"/>
+                            </group>
+                            <group name="bordereau_info" string="Informations Bordereau">
+                                <field name="numero_bordereau"/>
+                                <field name="coursier"/>
+                                <field name="heure_arrivee"/>
+                            </group>
+                        </group>
+
+                        <group string="Options">
+                            <field name="creation_automatique_dossiers"/>
+                            <field name="demarrer_traitement"/>
+                        </group>
+
+                        <group string="Notes">
+                            <field name="notes" nolabel="1" placeholder="Notes sur cette réception..."/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_creer_reception" type="object" string="Créer Réception" class="btn-primary"/>
+                        <button name="action_annuler" type="object" string="Annuler" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Wizard Nouvelle Réception -->
+        <record id="action_wizard_nouvelle_reception" model="ir.actions.act_window">
+            <field name="name">Nouvelle Réception</field>
+            <field name="res_model">wizard.nouvelle.reception</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_wizard_nouvelle_reception_form"/>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- VUES WIZARD CRÉER CARTON -->
+        <!-- ========================================= -->
+
+        <!-- Vue Formulaire Wizard Créer Carton -->
+        <record id="view_wizard_creer_carton_form" model="ir.ui.view">
+            <field name="name">wizard.creer.carton.form</field>
+            <field name="model">wizard.creer.carton</field>
+            <field name="arch" type="xml">
+                <form string="Créer un Nouveau Carton">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <span>Créer un Nouveau Carton</span>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="carton_info" string="Informations Carton">
+                                <field name="type_dossier"/>
+                                <field name="capacite_max"/>
+                                <field name="operateur_id" options="{'no_create': True}"/>
+                            </group>
+                            <group name="numerotation" string="Numérotation">
+                                <field name="generer_numero_automatique"/>
+                                <field name="numero_carton_manuel" attrs="{'invisible': [('generer_numero_automatique', '=', True)], 'required': [('generer_numero_automatique', '=', False)]}"/>
+                            </group>
+                        </group>
+
+                        <group string="Options">
+                            <field name="demarrer_numerisation"/>
+                        </group>
+
+                        <group string="Notes">
+                            <field name="notes" nolabel="1" placeholder="Notes sur ce carton..."/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_creer_carton" type="object" string="Créer Carton" class="btn-primary"/>
+                        <button name="action_annuler" type="object" string="Annuler" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Wizard Créer Carton -->
+        <record id="action_wizard_creer_carton" model="ir.actions.act_window">
+            <field name="name">Créer Carton</field>
+            <field name="res_model">wizard.creer.carton</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_wizard_creer_carton_form"/>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- VUES WIZARD TRANSFERT STOCK -->
+        <!-- ========================================= -->
+
+        <!-- Vue Formulaire Wizard Transfert Stock -->
+        <record id="view_wizard_transfert_stock_form" model="ir.ui.view">
+            <field name="name">wizard.transfert.stock.form</field>
+            <field name="model">wizard.transfert.stock</field>
+            <field name="arch" type="xml">
+                <form string="Transfert de Stock">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <span>Transfert de Stock</span>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="transfert_info" string="Informations Transfert">
+                                <field name="type_transfert"/>
+                                <field name="gestionnaire_id" options="{'no_create': True}"/>
+                                <field name="date_transfert"/>
+                            </group>
+                            <group name="emplacements" string="Emplacements">
+                                <field name="emplacement_source_id" options="{'no_create': True}"/>
+                                <field name="emplacement_destination_id" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+
+                        <group string="Dossiers à Transférer">
+                            <field name="dossier_ids" nolabel="1" widget="many2many_tags"/>
+                        </group>
+
+                        <group string="Options">
+                            <field name="valider_automatiquement"/>
+                            <field name="envoyer_notification"/>
+                        </group>
+
+                        <group string="Notes">
+                            <field name="notes" nolabel="1" placeholder="Notes sur ce transfert..."/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_effectuer_transfert" type="object" string="Effectuer Transfert" class="btn-primary"/>
+                        <button name="action_annuler" type="object" string="Annuler" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Wizard Transfert Stock -->
+        <record id="action_wizard_transfert_stock" model="ir.actions.act_window">
+            <field name="name">Transfert Stock</field>
+            <field name="res_model">wizard.transfert.stock</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_wizard_transfert_stock_form"/>
+        </record>
+
+    </data>
+</odoo>
+

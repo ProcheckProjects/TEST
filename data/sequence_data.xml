@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ========================================= -->
+        <!-- SÉQUENCES POUR GÉNÉRATION AUTOMATIQUE -->
+        <!-- ========================================= -->
+
+        <!-- Séquence pour les Réceptions de Dossiers -->
+        <record id="seq_reception_dossier" model="ir.sequence">
+            <field name="name">Réception Dossier</field>
+            <field name="code">reception.dossier</field>
+            <field name="prefix">REC</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les Dossiers Collecteurs -->
+        <record id="seq_dossier_collecteur" model="ir.sequence">
+            <field name="name">Dossier Collecteur</field>
+            <field name="code">dossier.collecteur</field>
+            <field name="prefix">DC</field>
+            <field name="suffix"></field>
+            <field name="padding">8</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les Cartons de Numérisation -->
+        <record id="seq_carton_numerisation" model="ir.sequence">
+            <field name="name">Carton Numérisation</field>
+            <field name="code">carton.numerisation</field>
+            <field name="prefix">CART</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les Livraisons Numériques -->
+        <record id="seq_livraison_numerique" model="ir.sequence">
+            <field name="name">Livraison Numérique</field>
+            <field name="code">livraison.numerique</field>
+            <field name="prefix">LIV</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les Rapports KPI -->
+        <record id="seq_reporting_kpi" model="ir.sequence">
+            <field name="name">Rapport KPI</field>
+            <field name="code">reporting.kpi</field>
+            <field name="prefix">RPT</field>
+            <field name="suffix"></field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- SÉQUENCES AVEC DATE -->
+        <!-- ========================================= -->
+
+        <!-- Séquence pour les Réceptions avec Date -->
+        <record id="seq_reception_dossier_date" model="ir.sequence">
+            <field name="name">Réception Dossier avec Date</field>
+            <field name="code">reception.dossier.date</field>
+            <field name="prefix">REC/%(year)s/%(month)s/</field>
+            <field name="suffix"></field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les Dossiers Collecteurs avec Date -->
+        <record id="seq_dossier_collecteur_date" model="ir.sequence">
+            <field name="name">Dossier Collecteur avec Date</field>
+            <field name="code">dossier.collecteur.date</field>
+            <field name="prefix">DC/%(year)s/%(month)s/</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les Livraisons avec Date -->
+        <record id="seq_livraison_numerique_date" model="ir.sequence">
+            <field name="name">Livraison Numérique avec Date</field>
+            <field name="code">livraison.numerique.date</field>
+            <field name="prefix">LIV/%(year)s/%(month)s/</field>
+            <field name="suffix"></field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- SÉQUENCES SPÉCIALISÉES PAR TYPE -->
+        <!-- ========================================= -->
+
+        <!-- Séquence pour Cartons Prêt -->
+        <record id="seq_carton_pret" model="ir.sequence">
+            <field name="name">Carton Prêt</field>
+            <field name="code">carton.pret</field>
+            <field name="prefix">PRET</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour Cartons Équipement -->
+        <record id="seq_carton_equipement" model="ir.sequence">
+            <field name="name">Carton Équipement</field>
+            <field name="code">carton.equipement</field>
+            <field name="prefix">EQUIP</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour Cartons Compte -->
+        <record id="seq_carton_compte" model="ir.sequence">
+            <field name="name">Carton Compte</field>
+            <field name="code">carton.compte</field>
+            <field name="prefix">COMPT</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour Cartons Événement -->
+        <record id="seq_carton_evenement" model="ir.sequence">
+            <field name="name">Carton Événement</field>
+            <field name="code">carton.evenement</field>
+            <field name="prefix">EVENT</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- CONFIGURATION DES SÉQUENCES -->
+        <!-- ========================================= -->
+
+        <!-- Configuration pour réinitialisation annuelle -->
+        <record id="seq_config_annual_reset" model="ir.sequence.date_range">
+            <field name="sequence_id" ref="seq_reception_dossier_date"/>
+            <field name="date_from" eval="time.strftime('%Y-01-01')"/>
+            <field name="date_to" eval="time.strftime('%Y-12-31')"/>
+            <field name="number_next">1</field>
+        </record>
+
+        <record id="seq_config_annual_reset_dossier" model="ir.sequence.date_range">
+            <field name="sequence_id" ref="seq_dossier_collecteur_date"/>
+            <field name="date_from" eval="time.strftime('%Y-01-01')"/>
+            <field name="date_to" eval="time.strftime('%Y-12-31')"/>
+            <field name="number_next">1</field>
+        </record>
+
+        <record id="seq_config_annual_reset_livraison" model="ir.sequence.date_range">
+            <field name="sequence_id" ref="seq_livraison_numerique_date"/>
+            <field name="date_from" eval="time.strftime('%Y-01-01')"/>
+            <field name="date_to" eval="time.strftime('%Y-12-31')"/>
+            <field name="number_next">1</field>
+        </record>
+
+    </data>
+</odoo>
+

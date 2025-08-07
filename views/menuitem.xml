@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- MENU PRINCIPAL ARCHIVAGE COLLECTEURS -->
+        <!-- ========================================= -->
+
+        <!-- Menu Racine -->
+        <menuitem id="menu_archivage_collecteurs_root" 
+                  name="Archivage Collecteurs" 
+                  sequence="10" 
+                  web_icon="archivage_collecteurs_complet,static/description/icon.png"/>
+
+        <!-- ========================================= -->
+        <!-- SOUS-MENUS PRINCIPAUX -->
+        <!-- ========================================= -->
+
+        <!-- Menu Réception -->
+        <menuitem id="menu_reception" 
+                  name="Réception" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="10"/>
+
+        <!-- Menu Traitement -->
+        <menuitem id="menu_traitement" 
+                  name="Traitement" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="20"/>
+
+        <!-- Menu Numérisation -->
+        <menuitem id="menu_numerisation" 
+                  name="Numérisation" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="30"/>
+
+        <!-- Menu Indexation -->
+        <menuitem id="menu_indexation" 
+                  name="Indexation" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="40"/>
+
+        <!-- Menu Livraison -->
+        <menuitem id="menu_livraison" 
+                  name="Livraison" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="50"/>
+
+        <!-- Menu Reporting -->
+        <menuitem id="menu_reporting" 
+                  name="Reporting and KPIs"
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="60"/>
+
+        <!-- Menu Configuration -->
+        <menuitem id="menu_configuration" 
+                  name="Configuration" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="70" 
+                  groups="archivage_collecteurs_complet.group_manager"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS RÉCEPTION -->
+        <!-- ========================================= -->
+
+        <!-- Toutes les Réceptions -->
+        <menuitem id="menu_reception_all" 
+                  name="Toutes les Réceptions" 
+                  parent="menu_reception" 
+                  action="action_reception_dossier" 
+                  sequence="10"/>
+
+        <!-- Mes Réceptions -->
+        <menuitem id="menu_mes_receptions" 
+                  name="Mes Réceptions" 
+                  parent="menu_reception" 
+                  action="action_mes_receptions" 
+                  sequence="20" 
+                  groups="archivage_collecteurs_complet.group_archiviste"/>
+
+        <!-- Réceptions du Jour -->
+        <menuitem id="menu_receptions_jour" 
+                  name="Réceptions du Jour" 
+                  parent="menu_reception" 
+                  action="action_receptions_jour" 
+                  sequence="30"/>
+
+        <!-- Nouvelle Réception -->
+        <menuitem id="menu_nouvelle_reception" 
+                  name="Nouvelle Réception" 
+                  parent="menu_reception" 
+                  action="action_nouvelle_reception" 
+                  sequence="40" 
+                  groups="archivage_collecteurs_complet.group_archiviste"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS TRAITEMENT -->
+        <!-- ========================================= -->
+
+        <!-- Dossiers à Traiter -->
+        <menuitem id="menu_dossiers_traiter" 
+                  name="Dossiers à Traiter" 
+                  parent="menu_traitement" 
+                  action="action_dossiers_traiter" 
+                  sequence="10" 
+                  groups="archivage_collecteurs_complet.group_agent_traitement"/>
+
+        <!-- Mes Traitements -->
+        <menuitem id="menu_mes_traitements" 
+                  name="Mes Traitements" 
+                  parent="menu_traitement" 
+                  action="action_mes_traitements" 
+                  sequence="20" 
+                  groups="archivage_collecteurs_complet.group_agent_traitement"/>
+
+        <!-- Tous les Traitements -->
+        <menuitem id="menu_traitements_all" 
+                  name="Tous les Traitements" 
+                  parent="menu_traitement" 
+                  action="action_traitement_physique" 
+                  sequence="30"/>
+
+        <!-- Transferts Stock -->
+        <menuitem id="menu_transferts_stock" 
+                  name="Transferts Stock" 
+                  parent="menu_traitement" 
+                  action="action_transferts_stock" 
+                  sequence="40" 
+                  groups="archivage_collecteurs_complet.group_gestionnaire_stock"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS NUMÉRISATION -->
+        <!-- ========================================= -->
+
+        <!-- Cartons à Numériser -->
+        <menuitem id="menu_cartons_numeriser" 
+                  name="Cartons à Numériser" 
+                  parent="menu_numerisation" 
+                  action="action_cartons_numeriser" 
+                  sequence="10" 
+                  groups="archivage_collecteurs_complet.group_operateur_numerisation"/>
+
+        <!-- Mes Numérisations -->
+        <menuitem id="menu_mes_numerisations" 
+                  name="Mes Numérisations" 
+                  parent="menu_numerisation" 
+                  action="action_mes_numerisations" 
+                  sequence="20" 
+                  groups="archivage_collecteurs_complet.group_operateur_numerisation"/>
+
+        <!-- Gestion des Cartons -->
+        <menuitem id="menu_gestion_cartons" 
+                  name="Gestion des Cartons" 
+                  parent="menu_numerisation" 
+                  action="action_carton_numerisation" 
+                  sequence="30"/>
+
+        <!-- Toutes les Numérisations -->
+        <menuitem id="menu_numerisations_all" 
+                  name="Toutes les Numérisations" 
+                  parent="menu_numerisation" 
+                  action="action_numerisation_dossier" 
+                  sequence="40"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS INDEXATION -->
+        <!-- ========================================= -->
+
+        <!-- Dossiers à Indexer -->
+        <menuitem id="menu_dossiers_indexer" 
+                  name="Dossiers à Indexer" 
+                  parent="menu_indexation" 
+                  action="action_dossiers_indexer" 
+                  sequence="10" 
+                  groups="archivage_collecteurs_complet.group_agent_indexation"/>
+
+        <!-- Mes Indexations -->
+        <menuitem id="menu_mes_indexations" 
+                  name="Mes Indexations" 
+                  parent="menu_indexation" 
+                  action="action_mes_indexations" 
+                  sequence="20" 
+                  groups="archivage_collecteurs_complet.group_agent_indexation"/>
+
+        <!-- Toutes les Indexations -->
+        <menuitem id="menu_indexations_all" 
+                  name="Toutes les Indexations" 
+                  parent="menu_indexation" 
+                  action="action_indexation_dossier" 
+                  sequence="30"/>
+
+        <!-- Base de Recherche -->
+        <menuitem id="menu_base_recherche" 
+                  name="Base de Recherche" 
+                  parent="menu_indexation" 
+                  action="action_base_recherche" 
+                  sequence="40"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS LIVRAISON -->
+        <!-- ========================================= -->
+
+        <!-- Livraisons à Préparer -->
+        <menuitem id="menu_livraisons_preparer" 
+                  name="Livraisons à Préparer" 
+                  parent="menu_livraison" 
+                  action="action_livraisons_preparer" 
+                  sequence="10" 
+                  groups="archivage_collecteurs_complet.group_archiviste"/>
+
+        <!-- Mes Livraisons -->
+        <menuitem id="menu_mes_livraisons" 
+                  name="Mes Livraisons" 
+                  parent="menu_livraison" 
+                  action="action_mes_livraisons" 
+                  sequence="20" 
+                  groups="archivage_collecteurs_complet.group_archiviste"/>
+
+        <!-- Toutes les Livraisons -->
+        <menuitem id="menu_livraisons_all" 
+                  name="Toutes les Livraisons" 
+                  parent="menu_livraison" 
+                  action="action_livraison_numerique" 
+                  sequence="30"/>
+
+        <!-- Historique Livraisons -->
+        <menuitem id="menu_historique_livraisons" 
+                  name="Historique Livraisons" 
+                  parent="menu_livraison" 
+                  action="action_historique_livraisons" 
+                  sequence="40"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS REPORTING -->
+        <!-- ========================================= -->
+
+        <!-- Tableau de Bord -->
+        <menuitem id="menu_tableau_bord" 
+                  name="Tableau de Bord" 
+                  parent="menu_reporting" 
+                  action="action_tableau_bord_principal" 
+                  sequence="10"/>
+
+        <!-- KPIs Production -->
+        <menuitem id="menu_kpis_production" 
+                  name="KPIs Production" 
+                  parent="menu_reporting" 
+                  action="action_reporting_kpi" 
+                  sequence="20"/>
+
+        <!-- Rapports Quotidiens -->
+        <menuitem id="menu_rapports_quotidiens" 
+                  name="Rapports Quotidiens" 
+                  parent="menu_reporting" 
+                  action="action_rapports_quotidiens" 
+                  sequence="30"/>
+
+        <!-- Rapports Hebdomadaires -->
+        <menuitem id="menu_rapports_hebdomadaires" 
+                  name="Rapports Hebdomadaires" 
+                  parent="menu_reporting" 
+                  action="action_rapports_hebdomadaires" 
+                  sequence="40"/>
+
+        <!-- Rapports Mensuels -->
+        <menuitem id="menu_rapports_mensuels" 
+                  name="Rapports Mensuels" 
+                  parent="menu_reporting" 
+                  action="action_rapports_mensuels" 
+                  sequence="50"/>
+
+        <!-- Analyse Performance -->
+        <menuitem id="menu_analyse_performance" 
+                  name="Analyse Performance" 
+                  parent="menu_reporting" 
+                  action="action_analyse_performance" 
+                  sequence="60"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS CONFIGURATION -->
+        <!-- ========================================= -->
+
+        <!-- Utilisateurs et Groupes -->
+        <menuitem id="menu_utilisateurs_groupes" 
+                  name="Utilisateurs et Groupes" 
+                  parent="menu_configuration" 
+                  action="base.action_res_users" 
+                  sequence="10" 
+                  groups="archivage_collecteurs_complet.group_manager"/>
+
+        <!-- Emplacements Stock -->
+        <menuitem id="menu_emplacements_stock" 
+                  name="Emplacements Stock" 
+                  parent="menu_configuration" 
+                  action="stock.action_location_form" 
+                  sequence="20" 
+                  groups="archivage_collecteurs_complet.group_manager"/>
+
+        <!-- Types d'Opérations -->
+        <menuitem id="menu_types_operations" 
+                  name="Types d'Opérations" 
+                  parent="menu_configuration" 
+                  action="stock.action_picking_type_form" 
+                  sequence="30" 
+                  groups="archivage_collecteurs_complet.group_manager"/>
+
+        <!-- Séquences -->
+        <menuitem id="menu_sequences" 
+                  name="Séquences" 
+                  parent="menu_configuration" 
+                  action="base.ir_sequence_form" 
+                  sequence="40" 
+                  groups="archivage_collecteurs_complet.group_manager"/>
+
+        <!-- Paramètres Système -->
+        <menuitem id="menu_parametres_systeme" 
+                  name="Paramètres Système" 
+                  parent="menu_configuration" 
+                  action="action_parametres_systeme" 
+                  sequence="50" 
+                  groups="archivage_collecteurs_complet.group_manager"/>
+
+        <!-- ========================================= -->
+        <!-- MENUS RACCOURCIS RAPIDES -->
+        <!-- ========================================= -->
+
+        <!-- Séparateur -->
+        <menuitem id="menu_separator_raccourcis" 
+                  name="─────────────────" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="80"/>
+
+        <!-- Raccourcis Rapides -->
+        <menuitem id="menu_raccourcis_rapides" 
+                  name="🚀 Raccourcis Rapides" 
+                  parent="menu_archivage_collecteurs_root" 
+                  sequence="90"/>
+
+        <!-- Nouvelle Réception Rapide -->
+        <menuitem id="menu_nouvelle_reception_rapide" 
+                  name="➕ Nouvelle Réception" 
+                  parent="menu_raccourcis_rapides" 
+                  action="action_nouvelle_reception_rapide" 
+                  sequence="10" 
+                  groups="archivage_collecteurs_complet.group_archiviste"/>
+
+        <!-- Créer Carton -->
+        <menuitem id="menu_creer_carton_rapide" 
+                  name="📦 Créer Carton" 
+                  parent="menu_raccourcis_rapides" 
+                  action="action_creer_carton_rapide" 
+                  sequence="20" 
+                  groups="archivage_collecteurs_complet.group_operateur_numerisation"/>
+
+        <!-- Recherche Dossier -->
+        <menuitem id="menu_recherche_dossier_rapide" 
+                  name="🔍 Recherche Dossier" 
+                  parent="menu_raccourcis_rapides" 
+                  action="action_recherche_dossier_rapide" 
+                  sequence="30"/>
+
+        <!-- Statut Production -->
+        <menuitem id="menu_statut_production_rapide" 
+                  name="📊 Statut Production" 
+                  parent="menu_raccourcis_rapides" 
+                  action="action_statut_production_rapide" 
+                  sequence="40"/>
+
+    </data>
+</odoo>
+

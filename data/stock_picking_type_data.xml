@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ========================================= -->
+        <!-- TYPES D'OPÉRATION POUR WORKFLOW ARCHIVAGE -->
+        <!-- ========================================= -->
+
+        <!-- Réception des Dossiers -->
+        <record id="picking_type_reception_dossiers" model="stock.picking.type">
+            <field name="name">Réception Dossiers</field>
+            <field name="code">incoming</field>
+            <field name="sequence_code">REC-DOSS</field>
+            <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_reception"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">1</field>
+            <field name="color">2</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert vers Traitement Physique -->
+        <record id="picking_type_vers_traitement" model="stock.picking.type">
+            <field name="name">Vers Traitement Physique</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">TRAIT</field>
+            <field name="default_location_src_id" ref="stock_location_zone_reception"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_traitement"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">2</field>
+            <field name="color">3</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert vers Numérisation -->
+        <record id="picking_type_vers_numerisation" model="stock.picking.type">
+            <field name="name">Vers Numérisation</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">NUMER</field>
+            <field name="default_location_src_id" ref="stock_location_zone_traitement"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_numerisation"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">3</field>
+            <field name="color">4</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert vers Indexation -->
+        <record id="picking_type_vers_indexation" model="stock.picking.type">
+            <field name="name">Vers Indexation</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">INDEX</field>
+            <field name="default_location_src_id" ref="stock_location_zone_numerisation"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_indexation"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">4</field>
+            <field name="color">5</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert vers Livraison -->
+        <record id="picking_type_vers_livraison" model="stock.picking.type">
+            <field name="name">Vers Livraison</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">LIVR</field>
+            <field name="default_location_src_id" ref="stock_location_zone_indexation"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_livraison"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">5</field>
+            <field name="color">6</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Livraison Finale -->
+        <record id="picking_type_livraison_finale" model="stock.picking.type">
+            <field name="name">Livraison CIH Bank</field>
+            <field name="code">outgoing</field>
+            <field name="sequence_code">LIV-CIH</field>
+            <field name="default_location_src_id" ref="stock_location_zone_livraison"/>
+            <field name="default_location_dest_id" ref="stock_location_virtual_livres"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">6</field>
+            <field name="color">1</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- TYPES D'OPÉRATION SPÉCIALISÉS -->
+        <!-- ========================================= -->
+
+        <!-- Transfert vers Contrôle Qualité -->
+        <record id="picking_type_vers_controle_qualite" model="stock.picking.type">
+            <field name="name">Vers Contrôle Qualité</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">CTRL-Q</field>
+            <field name="default_location_src_id" ref="stock_location_zone_numerisation"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_controle_qualite"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">7</field>
+            <field name="color">7</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert vers Quarantaine -->
+        <record id="picking_type_vers_quarantaine" model="stock.picking.type">
+            <field name="name">Vers Quarantaine</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">QUAR</field>
+            <field name="default_location_src_id" ref="stock_location_zone_traitement"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_quarantaine"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">8</field>
+            <field name="color">8</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Retour de Quarantaine -->
+        <record id="picking_type_retour_quarantaine" model="stock.picking.type">
+            <field name="name">Retour de Quarantaine</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">RET-Q</field>
+            <field name="default_location_src_id" ref="stock_location_zone_quarantaine"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_traitement"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">9</field>
+            <field name="color">9</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Archivage Final -->
+        <record id="picking_type_archivage_final" model="stock.picking.type">
+            <field name="name">Archivage Final</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">ARCH</field>
+            <field name="default_location_src_id" ref="stock_location_zone_livraison"/>
+            <field name="default_location_dest_id" ref="stock_location_zone_archive"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">10</field>
+            <field name="color">10</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- TYPES D'OPÉRATION PAR TYPE DE DOSSIER -->
+        <!-- ========================================= -->
+
+        <!-- Transfert Dossiers Prêt -->
+        <record id="picking_type_dossiers_pret" model="stock.picking.type">
+            <field name="name">Dossiers Prêt</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">PRET</field>
+            <field name="default_location_src_id" ref="stock_location_zone_numerisation"/>
+            <field name="default_location_dest_id" ref="stock_location_dossiers_pret"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">11</field>
+            <field name="color">2</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert Dossiers Équipement -->
+        <record id="picking_type_dossiers_equipement" model="stock.picking.type">
+            <field name="name">Dossiers Équipement</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">EQUIP</field>
+            <field name="default_location_src_id" ref="stock_location_zone_numerisation"/>
+            <field name="default_location_dest_id" ref="stock_location_dossiers_equipement"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">12</field>
+            <field name="color">3</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert Dossiers Compte -->
+        <record id="picking_type_dossiers_compte" model="stock.picking.type">
+            <field name="name">Dossiers Compte</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">COMPT</field>
+            <field name="default_location_src_id" ref="stock_location_zone_numerisation"/>
+            <field name="default_location_dest_id" ref="stock_location_dossiers_compte"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">13</field>
+            <field name="color">4</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+        <!-- Transfert Dossiers Événement -->
+        <record id="picking_type_dossiers_evenement" model="stock.picking.type">
+            <field name="name">Dossiers Événement</field>
+            <field name="code">internal</field>
+            <field name="sequence_code">EVENT</field>
+            <field name="default_location_src_id" ref="stock_location_zone_numerisation"/>
+            <field name="default_location_dest_id" ref="stock_location_dossiers_evenement"/>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="sequence">14</field>
+            <field name="color">5</field>
+            <field name="use_create_lots">False</field>
+            <field name="use_existing_lots">False</field>
+            <field name="show_entire_packs">False</field>
+            <field name="show_reserved">False</field>
+        </record>
+
+    </data>
+</odoo>
+

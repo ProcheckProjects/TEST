@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- VUES POUR REPORTING KPI -->
+        <!-- ========================================= -->
+
+        <!-- Vue Liste Reporting KPI -->
+        <record id="view_reporting_kpi_tree" model="ir.ui.view">
+            <field name="name">reporting.kpi.tree</field>
+            <field name="model">reporting.kpi</field>
+            <field name="arch" type="xml">
+                <tree string="KPIs de Production">
+                    <field name="date_rapport"/>
+                    <field name="type_rapport"/>
+                    <field name="nombre_dossiers_receptionnes"/>
+                    <field name="duree_moyenne_traitement" widget="float_time"/>
+                    <field name="nombre_dossiers_numerises"/>
+                    <field name="nombre_pieces_indexees"/>
+                    <field name="taux_ecarts_erreurs"/>
+                    <field name="nombre_receptions_livrees"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Reporting KPI -->
+        <record id="view_reporting_kpi_form" model="ir.ui.view">
+            <field name="name">reporting.kpi.form</field>
+            <field name="model">reporting.kpi</field>
+            <field name="arch" type="xml">
+                <form string="KPI de Production">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="kpi_info">
+                                <field name="date_rapport"/>
+                                <field name="type_rapport"/>
+                            </group>
+                            <group name="stats_reception">
+                                <field name="nombre_dossiers_receptionnes"/>
+                                <field name="nombre_receptions_livrees"/>
+                            </group>
+                        </group>
+
+                        <group string="Traitement et Numérisation">
+                            <group>
+                                <field name="duree_moyenne_traitement" widget="float_time"/>
+                                <field name="nombre_dossiers_numerises"/>
+                            </group>
+                            <group>
+                                <field name="nombre_pieces_indexees"/>
+                                <field name="taux_ecarts_erreurs"/>
+                            </group>
+                        </group>
+
+                        <group string="Détails par Agent">
+                            <field name="kpi_agent_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="agent_id"/>
+                                    <field name="duree_moyenne_traitement_agent" widget="float_time"/>
+                                    <field name="nombre_dossiers_traites_agent"/>
+                                    <field name="nombre_dossiers_numerises_agent"/>
+                                    <field name="nombre_pieces_indexees_agent"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <group string="Tendances et Observations">
+                            <field name="tendances_observations" nolabel="1" placeholder="Tendances et observations..."/>
+                        </group>
+                    </sheet>
+                    
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Graphique Reporting KPI -->
+        <record id="view_reporting_kpi_graph" model="ir.ui.view">
+            <field name="name">reporting.kpi.graph</field>
+            <field name="model">reporting.kpi</field>
+            <field name="arch" type="xml">
+                <graph string="KPIs de Production" type="bar">
+                    <field name="date_rapport" type="row" interval="day"/>
+                    <field name="nombre_dossiers_receptionnes" type="measure"/>
+                    <field name="nombre_dossiers_numerises" type="measure"/>
+                    <field name="nombre_pieces_indexees" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vue Pivot Reporting KPI -->
+        <record id="view_reporting_kpi_pivot" model="ir.ui.view">
+            <field name="name">reporting.kpi.pivot</field>
+            <field name="model">reporting.kpi</field>
+            <field name="arch" type="xml">
+                <pivot string="Analyse KPIs">
+                    <field name="date_rapport" type="row" interval="month"/>
+                    <field name="type_rapport" type="col"/>
+                    <field name="nombre_dossiers_receptionnes" type="measure"/>
+                    <field name="duree_moyenne_traitement" type="measure"/>
+                    <field name="nombre_dossiers_numerises" type="measure"/>
+                    <field name="nombre_pieces_indexees" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Reporting KPI -->
+        <record id="view_reporting_kpi_search" model="ir.ui.view">
+            <field name="name">reporting.kpi.search</field>
+            <field name="model">reporting.kpi</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher KPIs">
+                    <field name="date_rapport"/>
+                    <field name="type_rapport"/>
+                    <filter name="quotidien" string="Quotidien" domain="[('type_rapport', '=', 'quotidien')]"/>
+                    <filter name="hebdomadaire" string="Hebdomadaire" domain="[('type_rapport', '=', 'hebdomadaire')]"/>
+                    <filter name="mensuel" string="Mensuel" domain="[('type_rapport', '=', 'mensuel')]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_type" string="Type de Rapport" context="{'group_by': 'type_rapport'}"/>
+                        <filter name="group_date" string="Date" context="{'group_by': 'date_rapport'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- VUES POUR NUMÉRISATION DOSSIER -->
+        <!-- ========================================= -->
+
+        <!-- Vue Liste Numérisations Dossiers -->
+        <record id="view_numerisation_dossier_tree" model="ir.ui.view">
+            <field name="name">numerisation.dossier.tree</field>
+            <field name="model">numerisation.dossier</field>
+            <field name="arch" type="xml">
+                <tree string="Numérisations de Dossiers" decoration-success="state==
+                'termine'" decoration-warning="state=='en_cours'">
+                    <field name="dossier_id"/>
+                    <field name="carton_id"/>
+                    <field name="operateur_id"/>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                    <field name="duree_numerisation" widget="float_time"/>
+                    <field name="nombre_pages"/>
+                    <field name="state" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Numérisation Dossier -->
+        <record id="view_numerisation_dossier_form" model="ir.ui.view">
+            <field name="name">numerisation.dossier.form</field>
+            <field name="model">numerisation.dossier</field>
+            <field name="arch" type="xml">
+                <form string="Numérisation de Dossier">
+                    <header>
+                        <button name="action_demarrer_numerisation" type="object" string="Démarrer Numérisation" 
+                                class="btn-primary" attrs="{'invisible': ['|', ('state', '!=', 'nouveau'), ('dossier_id.state', '!=', 'pret_numerisation')]}"/>
+                        <button name="action_terminer_numerisation" type="object" string="Terminer Numérisation" 
+                                class="btn-success" attrs="{'invisible': [('state', '!=', 'en_cours')]}"/>
+                        <button name="action_annuler_numerisation" type="object" string="Annuler" 
+                                class="btn-secondary" attrs="{'invisible': [('state', 'in', ['termine', 'annule'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="en_cours,pause,termine,valide,erreur"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="dossier_id" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="numerisation_info">
+                                <field name="operateur_id" options="{'no_create': True}"/>
+                                <field name="carton_id" options="{'no_create': True}"/>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                                <field name="duree_numerisation" widget="float_time"/>
+                            </group>
+                            <group name="details_numerisation">
+                                <field name="nombre_pages"/>
+                                <field name="qualite_numerisation"/>
+                                <field name="type_dossier"/>
+                            </group>
+                        </group>
+
+                        <group string="Observations">
+                            <field name="observations" nolabel="1" placeholder="Observations sur la numérisation..."/>
+                        </group>
+                    </sheet>
+                    
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Kanban Numérisation Dossier -->
+        <record id="view_numerisation_dossier_kanban" model="ir.ui.view">
+            <field name="name">numerisation.dossier.kanban</field>
+            <field name="model">numerisation.dossier</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="dossier_id"/>
+                    <field name="operateur_id"/>
+                    <field name="state"/>
+                    <field name="duree_numerisation"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="dossier_id"/>
+                                            </strong>
+                                        </div>
+                                        <div class="o_kanban_record_top_right">
+                                            <field name="state" widget="label_selection" options="{'classes': {'nouveau': 'default', 'en_cours': 'warning', 'termine': 'success'}}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="o_kanban_record_body">
+                                        <div>
+                                            <i class="fa fa-user"/> <field name="operateur_id"/>
+                                        </div>
+                                        <div t-if="record.duree_numerisation.raw_value">
+                                            <i class="fa fa-clock-o"/> <field name="duree_numerisation" widget="float_time"/>
+                                        </div>
+                                        <div t-if="record.nombre_pages_numerisees.raw_value">
+                                            <i class="fa fa-file-o"/> <field name="nombre_pages_numerisees"/> pages
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue Graphique Numérisation Dossier -->
+        <record id="view_numerisation_dossier_graph" model="ir.ui.view">
+            <field name="name">numerisation.dossier.graph</field>
+            <field name="model">numerisation.dossier</field>
+            <field name="arch" type="xml">
+                <graph string="Statistiques Numérisation" type="bar">
+                    <field name="date_debut" type="row" interval="day"/>
+                    <field name="duree_numerisation" type="measure"/>
+                    <field name="operateur_id" type="col"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Numérisation Dossier -->
+        <record id="view_numerisation_dossier_search" model="ir.ui.view">
+            <field name="name">numerisation.dossier.search</field>
+            <field name="model">numerisation.dossier</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Numérisations">
+                    <field name="dossier_id"/>
+                    <field name="carton_id"/>
+                    <field name="operateur_id"/>
+                    <field name="state"/>
+                    <filter name="nouveau" string="Nouveau" domain="[('state', '=', 'nouveau')]"/>
+                    <filter name="en_cours" string="En Cours" domain="[('state', '=', 'en_cours')]"/>
+                    <filter name="termine" string="Terminé" domain="[('state', '=', 'termine')]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_operateur" string="Opérateur" context="{'group_by': 'operateur_id'}"/>
+                        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

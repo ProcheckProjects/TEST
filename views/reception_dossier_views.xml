@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========================================= -->
+        <!-- VUES POUR RECEPTION DOSSIER -->
+        <!-- ========================================= -->
+
+        <!-- Vue Liste Réceptions -->
+        <record id="view_reception_dossier_tree" model="ir.ui.view">
+            <field name="name">reception.dossier.tree</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <tree string="Réceptions de Dossiers" decoration-success="state=='termine'" decoration-warning="state=='en_cours'" decoration-info="state=='valide'">
+                    <field name="numero_reception"/>
+                    <field name="date_reception"/>
+                    <field name="type_dossier"/>
+                    <field name="nombre_dossiers"/>
+                    <field name="archiviste_id"/>
+                    <field name="state" widget="badge"/>
+                    <field name="duree_traitement_totale" widget="float_time"/>
+                    <field name="notes"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Réception -->
+        <record id="view_reception_dossier_form" model="ir.ui.view">
+            <field name="name">reception.dossier.form</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <form string="Réception de Dossiers">
+                    <header>
+                        <button name="action_valider_reception" type="object" string="Valider Réception" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'brouillon')]}"/>
+                        <button name="action_demarrer_traitement" type="object" string="Démarrer Traitement" 
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'valide')]}"/>
+                        <button name="action_terminer_reception" type="object" string="Terminer Réception" 
+                                class="btn-success" attrs="{'invisible': [('state', '!=', 'en_cours')]}"/>
+                        <button name="action_annuler_reception" type="object" string="Annuler" 
+                                class="btn-secondary" attrs="{'invisible': [('state', 'in', ['termine', 'annule'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="brouillon,valide,en_cours,termine"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_voir_dossiers" type="object" class="oe_stat_button" icon="fa-folder">
+                                <field name="nombre_dossiers" widget="statinfo" string="Dossiers"/>
+                            </button>
+                            <button name="action_voir_traitements" type="object" class="oe_stat_button" icon="fa-cogs">
+                                <field name="nombre_dossiers_traites" widget="statinfo" string="Traités"/>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="numero_reception" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group name="reception_info">
+                                <field name="date_reception"/>
+                                <field name="archiviste_id" options="{'no_create': True}"/>
+                                <field name="type_dossier"/>
+                                <field name="nombre_dossiers"/>
+                            </group>
+                            <group name="bordereau_info">
+                                <field name="bordereau_livraison"/>
+                                <field name="coursier"/>
+                                <field name="heure_arrivee"/>
+                                <field name="heure_reception"/>
+                            </group>
+                        </group>
+
+                        <group name="timing_info" string="Informations de Timing">
+                            <group>
+                                <field name="duree_traitement_totale" widget="float_time"/>
+                                <field name="duree_moyenne_par_dossier" widget="float_time"/>
+                            </group>
+
+                        </group>
+
+                        <notebook>
+                            <page string="Dossiers Collecteurs" name="dossiers">
+                                <field name="dossier_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="numero_dossier"/>
+                                        <field name="radical_dossier"/>
+                                        <field name="code_agence"/>
+                                        <field name="nombre_pieces"/>
+                                        <field name="state" widget="badge"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                            <page string="Contrôles Qualité" name="controles">
+                                <group>
+                                    <group name="controles_reception">
+                                        <field name="controle_nombre"/>
+                                        <field name="controle_etat"/>
+                                        <field name="controle_completude"/>
+                                    </group>
+                                    <group name="controles_bordereau">
+                                        <field name="controle_bordereau"/>
+                                        <field name="controle_signature"/>
+                                    </group>
+                                </group>
+                                
+                                <group string="Anomalies Détectées" name="anomalies">
+                                    <field name="anomalies_detectees" nolabel="1"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Notes et Observations" name="notes">
+                                <group>
+                                    <field name="notes" nolabel="1" placeholder="Notes sur la réception..."/>
+                                    <field name="observation_conformite" nolabel="1" placeholder="Observations particulières..."/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Kanban Réceptions -->
+        <record id="view_reception_dossier_kanban" model="ir.ui.view">
+            <field name="name">reception.dossier.kanban</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="numero_reception"/>
+                    <field name="date_reception"/>
+                    <field name="type_dossier"/>
+                    <field name="nombre_dossiers"/>
+                    <field name="archiviste_id"/>
+                    <field name="state"/>
+                    <field name="duree_traitement_totale"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="numero_reception"/>
+                                            </strong>
+                                        </div>
+                                        <div class="o_kanban_record_top_right">
+                                            <field name="state" widget="label_selection" options="{'classes': {'brouillon': 'default', 'valide': 'info', 'en_cours': 'warning', 'termine': 'success', 'annule': 'danger'}}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_subtitle">
+                                            <i class="fa fa-calendar"/> <field name="date_reception"/>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-folder"/> <field name="type_dossier"/> 
+                                            (<field name="nombre_dossiers"/> dossiers)
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-user"/> <field name="archiviste_id"/>
+                                        </div>
+                                        <div t-if="record.duree_traitement_totale.raw_value">
+                                            <i class="fa fa-clock-o"/> <field name="duree_traitement_totale" widget="float_time"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue Calendrier Réceptions -->
+        <record id="view_reception_dossier_calendar" model="ir.ui.view">
+            <field name="name">reception.dossier.calendar</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <calendar string="Réceptions" date_start="date_reception" color="type_dossier" mode="month">
+                    <field name="numero_reception"/>
+                    <field name="nombre_dossiers"/>
+                    <field name="archiviste_id"/>
+                    <field name="state"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Vue Graphique Réceptions -->
+        <record id="view_reception_dossier_graph" model="ir.ui.view">
+            <field name="name">reception.dossier.graph</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <graph string="Statistiques Réceptions" type="bar">
+                    <field name="date_reception" type="row" interval="day"/>
+                    <field name="nombre_dossiers" type="measure"/>
+                    <field name="duree_traitement_totale" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vue Pivot Réceptions -->
+        <record id="view_reception_dossier_pivot" model="ir.ui.view">
+            <field name="name">reception.dossier.pivot</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <pivot string="Analyse Réceptions">
+                    <field name="date_reception" type="row" interval="month"/>
+                    <field name="type_dossier" type="col"/>
+                    <field name="nombre_dossiers" type="measure"/>
+                    <field name="duree_traitement_totale" type="measure"/>
+
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Réceptions -->
+        <record id="view_reception_dossier_search" model="ir.ui.view">
+            <field name="name">reception.dossier.search</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Réceptions">
+                    <field name="numero_reception"/>
+                    <field name="bordereau_livraison"/>
+                    <field name="archiviste_id"/>
+                    <field name="type_dossier"/>
+                    <field name="coursier"/>
+                    
+                    <filter name="brouillon" string="Brouillon" domain="[('state', '=', 'brouillon')]"/>
+                    <filter name="valide" string="Validé" domain="[('state', '=', 'valide')]"/>
+                    <filter name="en_cours" string="En Cours" domain="[('state', '=', 'en_cours')]"/>
+                    <filter name="termine" string="Terminé" domain="[('state', '=', 'termine')]"/>
+                    
+                    <separator/>
+                    <filter name="aujourd_hui" string="Aujourd'hui" domain="[('date_reception', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter name="cette_semaine" string="Cette Semaine" domain="[('date_reception', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter name="ce_mois" string="Ce Mois" domain="[('date_reception', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                    
+                    <separator/>
+                    <filter name="mes_receptions" string="Mes Réceptions" domain="[('archiviste_id', '=', uid)]"/>
+                    
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_archiviste" string="Archiviste" context="{'group_by': 'archiviste_id'}"/>
+                        <filter name="group_type" string="Type de Dossier" context="{'group_by': 'type_dossier'}"/>
+                        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                        <filter name="group_date" string="Date de Réception" context="{'group_by': 'date_reception:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- ACTIONS -->
+        <!-- ========================================= -->
+
+        <!-- Action principale Réceptions -->
+        <record id="action_reception_dossier" model="ir.actions.act_window">
+            <field name="name">Réceptions de Dossiers</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
+            <field name="search_view_id" ref="view_reception_dossier_search"/>
+            <field name="context">{
+                'search_default_ce_mois': 1,
+                'search_default_group_state': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle réception de dossiers
+                </p>
+                <p>
+                    Gérez les réceptions de dossiers collecteurs en provenance de CIH Bank.
+                    Chaque réception comprend un bordereau de livraison et un ensemble de dossiers à traiter.
+                </p>
+            </field>
+        </record>
+
+        <!-- Action Mes Réceptions -->
+        <record id="action_mes_receptions" model="ir.actions.act_window">
+            <field name="name">Mes Réceptions</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('archiviste_id', '=', uid)]</field>
+            <field name="context">{
+                'search_default_en_cours': 1,
+                'default_archiviste_id': uid
+            }</field>
+        </record>
+
+        <!-- Action Réceptions du Jour -->
+        <record id="action_receptions_jour" model="ir.actions.act_window">
+            <field name="name">Réceptions du Jour</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="domain">[('date_reception', '=', context_today().strftime('%Y-%m-%d'))]</field>
+            <field name="context">{'search_default_group_archiviste': 1}</field>
+        </record>
+
+        <!-- Action Tableau de Bord Réceptions -->
+        <record id="action_dashboard_receptions" model="ir.actions.act_window">
+            <field name="name">Tableau de Bord Réceptions</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">graph,pivot,tree</field>
+            <field name="context">{
+                'search_default_ce_mois': 1,
+                'search_default_group_date': 1
+            }</field>
+        </record>
+
+
+
+
+
+
+        <!-- Vue Kanban Réceptions -->
+        <record id="view_reception_dossier_kanban" model="ir.ui.view">
+            <field name="name">reception.dossier.kanban</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="numero_reception"/>
+                    <field name="date_reception"/>
+                    <field name="type_dossier"/>
+                    <field name="nombre_dossiers"/>
+                    <field name="archiviste_id"/>
+                    <field name="state"/>
+                    <field name="duree_traitement_totale"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="numero_reception"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_kanban_record_top_right">
+                                        <field name="state" widget="label_selection" options="{'classes': {'brouillon': 'default', 'valide': 'info', 'en_cours': 'warning', 'termine': 'success', 'annule': 'danger'}}"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_record_subtitle">
+                                        <i class="fa fa-calendar"/> <field name="date_reception"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-folder"/> <field name="type_dossier"/> 
+                                        (<field name="nombre_dossiers"/> dossiers)
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-user"/> <field name="archiviste_id"/>
+                                    </div>
+                                    <div t-if="record.duree_traitement_totale.raw_value">
+                                        <i class="fa fa-clock-o"/> <field name="duree_traitement_totale" widget="float_time"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue Calendrier Réceptions -->
+        <record id="view_reception_dossier_calendar" model="ir.ui.view">
+            <field name="name">reception.dossier.calendar</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <calendar string="Réceptions" date_start="date_reception" color="type_dossier" mode="month">
+                    <field name="numero_reception"/>
+                    <field name="nombre_dossiers"/>
+                    <field name="archiviste_id"/>
+                    <field name="state"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Vue Graphique Réceptions -->
+        <record id="view_reception_dossier_graph" model="ir.ui.view">
+            <field name="name">reception.dossier.graph</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <graph string="Statistiques Réceptions" type="bar">
+                    <field name="date_reception" type="row" interval="day"/>
+                    <field name="nombre_dossiers" type="measure"/>
+                    <field name="duree_traitement_totale" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vue Pivot Réceptions -->
+        <record id="view_reception_dossier_pivot" model="ir.ui.view">
+            <field name="name">reception.dossier.pivot</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <pivot string="Analyse Réceptions">
+                    <field name="date_reception" type="row" interval="month"/>
+                    <field name="type_dossier" type="col"/>
+                    <field name="nombre_dossiers" type="measure"/>
+                    <field name="duree_traitement_totale" type="measure"/>
+
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Réceptions -->
+        <record id="view_reception_dossier_search" model="ir.ui.view">
+            <field name="name">reception.dossier.search</field>
+            <field name="model">reception.dossier</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Réceptions">
+                    <field name="numero_reception"/>
+                    <field name="bordereau_livraison"/>
+                    <field name="archiviste_id"/>
+                    <field name="type_dossier"/>
+                    <field name="coursier"/>
+                    
+                    <filter name="brouillon" string="Brouillon" domain="[('state', '=', 'brouillon')]"/>
+                    <filter name="valide" string="Validé" domain="[('state', '=', 'valide')]"/>
+                    <filter name="en_cours" string="En Cours" domain="[('state', '=', 'en_cours')]"/>
+                    <filter name="termine" string="Terminé" domain="[('state', '=', 'termine')]"/>
+                    
+                    <separator/>
+                    <filter name="aujourd_hui" string="Aujourd\'hui" domain="[('date_reception', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter name="cette_semaine" string="Cette Semaine" domain="[('date_reception', '>=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter name="ce_mois" string="Ce Mois" domain="[('date_reception', '>=', context_today().strftime('%Y-%m-01'))]"/>
+                    
+                    <separator/>
+                    <filter name="mes_receptions" string="Mes Réceptions" domain="[('archiviste_id', '=', uid)]"/>
+                    
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_archiviste" string="Archiviste" context="{'group_by': 'archiviste_id'}"/>
+                        <filter name="group_type" string="Type de Dossier" context="{'group_by': 'type_dossier'}"/>
+                        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                        <filter name="group_date" string="Date de Réception" context="{'group_by': 'date_reception:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ========================================= -->
+        <!-- ACTIONS -->
+        <!-- ========================================= -->
+
+        <!-- Action principale Réceptions -->
+        <record id="action_reception_dossier" model="ir.actions.act_window">
+            <field name="name">Réceptions de Dossiers</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">kanban,tree,form,calendar,graph,pivot</field>
+            <field name="search_view_id" ref="view_reception_dossier_search"/>
+            <field name="context">{
+                'search_default_ce_mois': 1,
+                'search_default_group_state': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle réception de dossiers
+                </p>
+                <p>
+                    Gérez les réceptions de dossiers collecteurs en provenance de CIH Bank.
+                    Chaque réception comprend un bordereau de livraison et un ensemble de dossiers à traiter.
+                </p>
+            </field>
+        </record>
+
+        <!-- Action Mes Réceptions -->
+        <record id="action_mes_receptions" model="ir.actions.act_window">
+            <field name="name">Mes Réceptions</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[(\'archiviste_id\', \'=\', uid)]</field>
+            <field name="context">{
+                \'search_default_en_cours\': 1,
+                \'default_archiviste_id\': uid
+            }</field>
+        </record>
+
+        <!-- Action Réceptions du Jour -->
+        <record id="action_reception_du_jour" model="ir.actions.act_window">
+            <field name="name">Réceptions du Jour</field>
+            <field name="res_model">reception.dossier</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[(\'date_reception\', \'=\', context_today().strftime(\'%Y-%m-%d\'))]</field>
+            <field name="context">{
+                \'search_default_aujourd_hui\': 1,
+                \'default_archiviste_id\': uid
+            }</field>
+        </record>
+
+    </data>
+</odoo>
+
